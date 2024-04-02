@@ -41,7 +41,7 @@ suspend fun getOrCreateWebsocket(token: String, onReady: DiscordReadyEvent.() ->
 fun Merkelcord() {
     val websocketScope = rememberCoroutineScope()
 
-    val token = "MTIwMjM2MDE1MDM3NjMxNjk2NA.Gh6SXR.VbJTYog_kqVdxFJmshKjVPFl2a8HGbXoVmk8xo"
+    val token = ""
 
     val guilds = remember { mutableStateListOf<Guild>() }
     val privateChannels = remember { mutableStateListOf<PrivateChannel>() }
