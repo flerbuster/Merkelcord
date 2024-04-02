@@ -1,22 +1,24 @@
 package de.flerbuster.merkelcord.api.websocket
 
 import de.flerbuster.merkelcord.api.DiscordApi
+import de.flerbuster.merkelcord.api.websocket.message.DiscordReadyMessage
 import de.flerbuster.merkelcord.api.websocket.message.*
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.serialization.encodeToString
 
 class DiscordWebSocket(
-    val token: String
+    val token: String,
+    val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
     companion object {
-        val json = DiscordApi.json
+        val decodingJson = DiscordApi.decodingJson
+        val encodingJson = DiscordApi.encodingJson
 
         val ktorClient = HttpClient(CIO) {
             install(WebSockets)
@@ -27,6 +29,8 @@ class DiscordWebSocket(
 
     var session: DefaultClientWebSocketSession? = null
     var pendingIdentify = false
+
+    val eventFlow = MutableSharedFlow<EventMessage>()
 
     suspend fun connect() {
         ktorClient.webSocket("wss://gateway.discord.gg") {
@@ -43,7 +47,7 @@ class DiscordWebSocket(
     }
 
     private suspend fun DefaultClientWebSocketSession.handleText(frame: Frame.Text) {
-        val message = json.decodeFromString<DiscordMessage>(frame.readText())
+        val message = decodingJson.decodeFromString<DiscordMessage>(frame.readText())
 
         when (message) {
             is DiscordHelloMessage -> {
@@ -52,22 +56,27 @@ class DiscordWebSocket(
                 startHeartbeat()
             }
             is DiscordHeartbeatAck -> {
-                println("ack recieved")
                 if (pendingIdentify) {
                     identify()
                     pendingIdentify = false
                 }
             }
+            is EventMessage -> {
+                eventFlow.emit(message)
+                println(message::class.qualifiedName)
+            }
 
-
-            else -> error("invalid message: $message")
+            else -> {
+                println("${message::class.qualifiedName} is unhandled")
+            }
         }
 
-        println("message: $message")
+        // println("message: $message")
     }
 
     private suspend fun DefaultClientWebSocketSession.identify() {
-        send(json.encodeToString(ClientSentIdentify(
+        send(
+            encodingJson.encodeToString(ClientSentIdentify(
             ClientSentIdentify.IdentifyData(
                 token,
                 mapOf(
@@ -91,6 +100,24 @@ class DiscordWebSocket(
     }
 
     private suspend fun DefaultClientWebSocketSession.sendHeartbeat() {
-        send(json.encodeToString(ClientSentHeartbeat()))
+        if (pendingIdentify) {
+            identify()
+            pendingIdentify = false
+        }
+        println(encodingJson.encodeToString(ClientSentHeartbeat()))
+        send(encodingJson.encodeToString(ClientSentHeartbeat()))
     }
+
 }
+
+
+// keine ahnung wieso das nicht geht
+inline fun <reified M : EventMessage> DiscordWebSocket.on(
+    scope: CoroutineScope = this.scope,
+    noinline consumer: M.() -> Unit
+): Job =
+    eventFlow.buffer(Channel.UNLIMITED).filterIsInstance<M>()
+        .onEach { event ->
+            scope.launch { runCatching { consumer(event) }.onFailure { println("fail: ${it.message}") } }
+        }
+        .launchIn(scope)
