@@ -47,7 +47,7 @@ fun DmChannel(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier 
+        modifier = Modifier
             .padding(5.dp)
             .clickable { onOpen(channel) }
             .pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)))
