@@ -10,10 +10,10 @@ data class PrivateChannel(
     val type: Int?,
     val recipients: List<Recipient>?,
     @SerialName("last_message_id")
-    val lastMessageId: String?,
+    override val lastMessageId: String?,
     @SerialName("is_spam")
     val isSpam: Boolean?,
-    val id: String?,
+    override val id: String,
     val flags: Int?,
     @SerialName("last_pin_timestamp")
     val lastPinTimestamp: String?,
@@ -25,4 +25,4 @@ data class PrivateChannel(
     val isMessageRequestTimestamp: String?,
     @SerialName("is_message_request")
     val isMessageRequest: Boolean?
-)
+) : BaseChannel(id, lastMessageId)

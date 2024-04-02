@@ -1,11 +1,7 @@
 package de.flerbuster.merkelcord.api.event
 
-import de.flerbuster.merkelcord.api.websocket.message.DiscordMessage
-import de.flerbuster.merkelcord.api.websocket.message.DiscordReadyMessage
-import de.flerbuster.merkelcord.api.websocket.message.MessageCreateMessage
-import de.flerbuster.merkelcord.api.websocket.message.SessionsReplaceMessage
+import de.flerbuster.merkelcord.api.websocket.message.*
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -19,7 +15,12 @@ interface Event {
                 "READY" -> DiscordReadyMessage.serializer()
                 "SESSIONS_REPLACE" -> SessionsReplaceMessage.serializer()
                 "MESSAGE_CREATE" -> MessageCreateMessage.serializer()
-                else -> error("unknown event: $element")
+                "PRESENCE_UPDATE" -> PresenceUpdateMessage.serializer()
+                "MESSAGE_ACK" -> MessageAckMessage.serializer()
+                else -> {
+                    println("unknown event: $element")
+                    EventMessage.serializer()
+                }
             }
         }
     }

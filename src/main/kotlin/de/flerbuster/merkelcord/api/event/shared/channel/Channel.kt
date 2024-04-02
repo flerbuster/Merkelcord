@@ -22,8 +22,8 @@ data class Channel(
     @SerialName("last_pin_timestamp")
     val lastPinTimestamp: String?,
     @SerialName("last_message_id")
-    val lastMessageId: String?,
-    val id: String?,
+    override val lastMessageId: String?,
+    override val id: String,
     @SerialName("icon_emoji")
     val iconEmoji: IconEmoji?,
     val flags: Int?,
@@ -47,4 +47,4 @@ data class Channel(
     val availableTags: List<AvailableTag?>?,
     @SerialName("default_forum_layout")
     val defaultForumLayout: Int?
-)
+) : BaseChannel(id, lastMessageId)

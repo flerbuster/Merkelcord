@@ -1,6 +1,7 @@
 package de.flerbuster.merkelcord.api.websocket
 
 import de.flerbuster.merkelcord.api.DiscordApi
+import de.flerbuster.merkelcord.api.event.ready.DiscordReadyEvent
 import de.flerbuster.merkelcord.api.websocket.message.DiscordReadyMessage
 import de.flerbuster.merkelcord.api.websocket.message.*
 import io.ktor.client.*
@@ -32,21 +33,23 @@ class DiscordWebSocket(
 
     val eventFlow = MutableSharedFlow<EventMessage>()
 
-    suspend fun connect() {
+    var readyEvent: DiscordReadyEvent? = null
+
+    suspend fun connect(onReady: DiscordReadyEvent.() -> Unit = { }) {
         ktorClient.webSocket("wss://gateway.discord.gg") {
             session = this
 
 
             while (true) {
                 when (val frame = incoming.receive()) {
-                    is Frame.Text -> handleText(frame)
+                    is Frame.Text -> handleText(frame, onReady)
                     else -> {}
                 }
             }
         }
     }
 
-    private suspend fun DefaultClientWebSocketSession.handleText(frame: Frame.Text) {
+    private suspend fun DefaultClientWebSocketSession.handleText(frame: Frame.Text, onReady: DiscordReadyEvent.() -> Unit) {
         val message = decodingJson.decodeFromString<DiscordMessage>(frame.readText())
 
         when (message) {
@@ -62,6 +65,10 @@ class DiscordWebSocket(
                 }
             }
             is EventMessage -> {
+                when (message) {
+                    is DiscordReadyMessage -> message.data?.let { onReady(it); readyEvent = it }
+                    else -> { }
+                }
                 eventFlow.emit(message)
                 println(message::class.qualifiedName)
             }

@@ -7,19 +7,19 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Message(
-    val type: Int,
+    val type: Int?,
     val tts: Boolean?,
     val timestamp: Instant?,
     @SerialName("referenced_message")
     val referencedMessage: Message?,
     val pinned: Boolean?,
-    val nonce: String,
+    val nonce: String?,
     val mentions: List<User>?,
     // @SerialName("mention_roles")
     // val mentionRoles: List<Role>
     @SerialName("mention_everyone")
     val mentionEveryone: Boolean?,
-    val id: String,
+    val id: String?,
     val flags: Int?,
     // val embeds: List<Embed>
     @SerialName("edited_timestamp")
@@ -27,7 +27,7 @@ data class Message(
     val content: String,
     // val components: List<Component>
     @SerialName("channel_id")
-    val channelId: String,
-    val author: User, // Author
+    val channelId: String?,
+    val author: User?, // Author
     // val attachments: List<Attachment>
 )
