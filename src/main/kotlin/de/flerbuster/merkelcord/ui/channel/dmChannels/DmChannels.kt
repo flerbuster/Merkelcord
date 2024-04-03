@@ -1,23 +1,23 @@
 package de.flerbuster.merkelcord.ui.channel.dmChannels
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
-import de.flerbuster.merkelcord.api.DiscordApi
 import de.flerbuster.merkelcord.api.event.shared.channel.PrivateChannel
+import de.flerbuster.merkelcord.ui.coloring.colorScheme
 import de.flerbuster.merkelcord.ui.util.MerkelcordText
-import de.flerbuster.merkelcord.ui.util.imagePainter
+import de.flerbuster.merkelcord.ui.util.MerkelcordVerticalScrollbar
 import java.awt.Cursor
 
 @Composable
@@ -26,13 +26,22 @@ fun DmChannels(
     modifier: Modifier,
     onOpen: (channel: PrivateChannel) -> Unit
 ) {
+    val sorted = users.sortedBy { channel ->
+        -(channel.lastMessageId?.toLongOrNull() ?: 0)
+    }
+
+    val state = rememberLazyListState()
+
     LazyColumn(
-        modifier = modifier
+        modifier = modifier,
+        state = state
     ) { // Server
-        items(users) { channel ->
+        items(sorted) { channel ->
             DmChannel(channel, onOpen)
         }
     }
+
+    MerkelcordVerticalScrollbar(state)
 }
 
 @Composable
@@ -41,9 +50,8 @@ fun DmChannel(
     onOpen: (channel: PrivateChannel) -> Unit
 ) {
     val user = channel.recipients?.firstOrNull() ?: return
-    val userAvatarUrl = DiscordApi.userAvatar(user.id ?: "", user.avatar)
 
-    val painter = imagePainter(userAvatarUrl)
+    val painter = user.avatarPainter
 
     Row(
         verticalAlignment = Alignment.CenterVertically,

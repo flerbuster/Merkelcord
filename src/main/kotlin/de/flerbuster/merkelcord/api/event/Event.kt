@@ -17,9 +17,11 @@ interface Event {
                 "MESSAGE_CREATE" -> MessageCreateMessage.serializer()
                 "PRESENCE_UPDATE" -> PresenceUpdateMessage.serializer()
                 "MESSAGE_ACK" -> MessageAckMessage.serializer()
+                "VOICE_STATE_UPDATE" -> VoiceStateUpdateMessage.serializer()
+                "VOICE_CHANNEL_STATUS_UPDATE" -> VoiceChannelStatusUpdateMessage.serializer()
                 else -> {
                     println("unknown event: $element")
-                    EventMessage.serializer()
+                    DiscordEventMessage.serializer()
                 }
             }
         }

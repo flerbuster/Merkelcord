@@ -1,17 +1,21 @@
-package de.flerbuster.merkelcord.api.event.shared.user
+package de.flerbuster.merkelcord.api.event.shared.guild
 
 
+import androidx.compose.ui.graphics.painter.Painter
+import de.flerbuster.merkelcord.api.DiscordApi
 import de.flerbuster.merkelcord.api.event.shared.channel.Channel
 import de.flerbuster.merkelcord.api.event.shared.channel.Thread
 import de.flerbuster.merkelcord.api.event.shared.client.ActivityInstances
 import de.flerbuster.merkelcord.api.event.shared.client.Presence
-import de.flerbuster.merkelcord.api.event.shared.guild.Role
 import de.flerbuster.merkelcord.api.event.shared.other.ApplicationCommandCounts
 import de.flerbuster.merkelcord.api.event.shared.other.Emoji
 import de.flerbuster.merkelcord.api.event.shared.other.SoundboardSound
 import de.flerbuster.merkelcord.api.event.shared.other.Sticker
+import de.flerbuster.merkelcord.api.event.shared.user.Member
+import de.flerbuster.merkelcord.ui.util.imagePainter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class Guild(
@@ -91,4 +95,13 @@ data class Guild(
     val applicationId: String?,
     @SerialName("max_members")
     val maxMembers: Int?
-)
+) {
+    @Transient
+    private var _painter: Painter? = null
+    val iconPainter: Painter
+        get() {
+            if (_painter != null) return _painter!!
+            _painter = imagePainter(DiscordApi.guildIcon(this))
+            return _painter!!
+        }
+}

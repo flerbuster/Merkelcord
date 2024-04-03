@@ -50,9 +50,7 @@ class DiscordWebSocket(
     }
 
     private suspend fun DefaultClientWebSocketSession.handleText(frame: Frame.Text, onReady: DiscordReadyEvent.() -> Unit) {
-        val message = decodingJson.decodeFromString<DiscordMessage>(frame.readText())
-
-        when (message) {
+        when (val message = decodingJson.decodeFromString<DiscordMessage>(frame.readText())) {
             is DiscordHelloMessage -> {
                 pendingIdentify = true
                 helloData = message.data

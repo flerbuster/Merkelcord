@@ -24,7 +24,7 @@ data class Message(
     // val embeds: List<Embed>
     @SerialName("edited_timestamp")
     val editedTimestamp: Instant?,
-    val content: String,
+    val content: String?,
     // val components: List<Component>
     @SerialName("channel_id")
     val channelId: String?,

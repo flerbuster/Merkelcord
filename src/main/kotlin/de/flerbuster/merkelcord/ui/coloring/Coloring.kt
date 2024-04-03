@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import de.flerbuster.merkelcord.ui.coloring.scheme.DiscordColorScheme
 import de.flerbuster.merkelcord.ui.coloring.scheme.darkColorScheme
 import de.flerbuster.merkelcord.ui.coloring.scheme.lightColorScheme
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -30,7 +32,8 @@ fun init() {
 }
 
 @Serializable
-data class ColoringData(
+data class ColoringData @OptIn(ExperimentalSerializationApi::class) constructor(
+    @EncodeDefault
     val useDark: Boolean = true
 )
 

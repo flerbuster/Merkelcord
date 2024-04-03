@@ -8,7 +8,7 @@ import de.flerbuster.merkelcord.api.event.shared.client.Session
 import de.flerbuster.merkelcord.api.event.shared.other.Auth
 import de.flerbuster.merkelcord.api.event.shared.other.Consents
 import de.flerbuster.merkelcord.api.event.shared.other.Relationship
-import de.flerbuster.merkelcord.api.event.shared.user.Guild
+import de.flerbuster.merkelcord.api.event.shared.guild.Guild
 import de.flerbuster.merkelcord.api.event.shared.user.User
 import de.flerbuster.merkelcord.api.event.shared.user.UserGuildSetting
 import de.flerbuster.merkelcord.api.event.shared.user.UserSettings

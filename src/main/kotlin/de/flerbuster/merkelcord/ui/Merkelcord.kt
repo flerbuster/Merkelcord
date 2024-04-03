@@ -3,7 +3,6 @@ package de.flerbuster.merkelcord.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -11,8 +10,10 @@ import de.flerbuster.merkelcord.api.DiscordApi
 import de.flerbuster.merkelcord.api.event.ready.DiscordReadyEvent
 import de.flerbuster.merkelcord.api.event.shared.channel.BaseChannel
 import de.flerbuster.merkelcord.api.event.shared.channel.PrivateChannel
-import de.flerbuster.merkelcord.api.event.shared.user.Guild
+import de.flerbuster.merkelcord.api.event.shared.guild.Guild
 import de.flerbuster.merkelcord.api.websocket.DiscordWebSocket
+import de.flerbuster.merkelcord.api.websocket.message.MessageCreateMessage
+import de.flerbuster.merkelcord.api.websocket.on
 import de.flerbuster.merkelcord.ui.channel.dmChannels.DmChannels
 import de.flerbuster.merkelcord.ui.channel.openChannel.OpenChannel
 import de.flerbuster.merkelcord.ui.coloring.colorScheme
@@ -51,9 +52,7 @@ fun Merkelcord() {
     websocketScope.launch {
         websocket = getOrCreateWebsocket(token) {
             this.guilds?.let { guilds.addAll(it) }
-            this.privateChannels?.let { privateChannels.addAll(it.sortedBy { channel ->
-                -(channel.lastMessageId?.toLongOrNull() ?: 0)
-            }) }
+            this.privateChannels?.let { privateChannels.addAll(it) }
         }
     }
 

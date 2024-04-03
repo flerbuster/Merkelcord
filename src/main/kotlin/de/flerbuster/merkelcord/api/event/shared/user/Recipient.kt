@@ -10,12 +10,12 @@ data class Recipient(
     val username: String?,
     @SerialName("public_flags")
     val publicFlags: Int?,
-    val id: String?,
+    override val id: String?,
     @SerialName("global_name")
     val globalName: String?,
     val discriminator: String?,
     @SerialName("avatar_decoration_data")
     val avatarDecorationData: AvatarDecorationData?,
-    val avatar: String?,
+    override val avatar: String?,
     val bot: Boolean?
-)
+) : BaseUser()

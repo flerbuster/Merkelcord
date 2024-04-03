@@ -1,8 +1,12 @@
 package de.flerbuster.merkelcord.api.event.shared.user
 
 
+import androidx.compose.ui.graphics.painter.Painter
+import de.flerbuster.merkelcord.api.DiscordApi
+import de.flerbuster.merkelcord.ui.util.imagePainter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class User(
@@ -21,7 +25,7 @@ data class User(
     val mobile: Boolean?,
     @SerialName("mfa_enabled")
     val mfaEnabled: Boolean?,
-    val id: String?,
+    override val id: String?,
     @SerialName("global_name")
     val globalName: String?,
     val flags: Int?,
@@ -31,7 +35,7 @@ data class User(
     val bio: String?,
     @SerialName("banner_color")
     val bannerColor: String?,
-    val avatar: String?,
+    override val avatar: String?,
     @SerialName("accent_color")
     val accentColor: Int?
-)
+) : BaseUser()
