@@ -1,5 +1,6 @@
 package de.flerbuster.merkelcord.ui.util
 
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,7 +22,13 @@ fun MerkelcordText(
     fontStyle: FontStyle? = FontStyle.Normal,
     fontWeight: FontWeight? = FontWeight.Normal,
     fontFamily: FontFamily? = FontFamily.SansSerif,
-    textAlign: TextAlign? = TextAlign.Left
+    textAlign: TextAlign? = TextAlign.Left,
+    selectable: Boolean = false
 ) {
-    Text(text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, textAlign=textAlign)
+    val content: @Composable () -> Unit = { Text(text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, textAlign=textAlign) }
+    if (selectable) {
+        SelectionContainer(content=content)
+    } else {
+        content()
+    }
 }

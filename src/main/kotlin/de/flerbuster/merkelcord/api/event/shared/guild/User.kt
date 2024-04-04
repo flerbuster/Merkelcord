@@ -18,5 +18,5 @@ data class User(
     val bot: Boolean,
     @SerialName("avatar_decoration_data")
     val avatarDecorationData: AvatarDecorationData,
-    val avatar: String
+    val avatar: String?
 )

@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import de.flerbuster.merkelcord.api.DiscordApi
 import de.flerbuster.merkelcord.api.event.shared.channel.BaseChannel
 import de.flerbuster.merkelcord.api.event.shared.message.Message
+import de.flerbuster.merkelcord.ui.channel.message.Message
 import de.flerbuster.merkelcord.ui.util.MerkelcordText
 import de.flerbuster.merkelcord.ui.util.MerkelcordVerticalScrollbar
 import kotlinx.coroutines.launch
@@ -27,10 +28,18 @@ fun OpenChannel(
 
     if (!fetched) scope.launch {
         fetched = true
-        api?.getMessages(channel.id)?.let { messages.addAll(it) }
+        api?.getMessages(channel.id)?.let { messages.addAll(it.reversed()) }
     }
 
     val state = rememberLazyListState()
+
+    var lastMessage: Message? = null
+
+    LaunchedEffect(messages.size) {
+        if (messages.isEmpty()) return@LaunchedEffect
+
+        state.scrollToItem(messages.size - 1)
+    }
 
     Column(
         modifier = modifier
@@ -46,7 +55,8 @@ fun OpenChannel(
                 state = state
             ) {
                 items(messages) {
-                    MerkelcordText(it.content ?: "")
+                    Message(it, lastMessage?.author?.id != it.author?.id)
+                    lastMessage = it
                 }
             }
 

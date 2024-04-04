@@ -43,7 +43,7 @@ val darkColorScheme = DiscordColorScheme(
 
     scrollbarColor = Color(31, 28, 29),
     scrollbarThumbColor = Color(23, 21, 25),
-    scrollbarThumbHoverColor = Color(33, 31, 35),
+    scrollbarThumbHoverColor = Color(17, 15, 19),
 
     textInputButtonColor = Color(0, 137, 123),
     textInputColor = Color(37, 32, 35),

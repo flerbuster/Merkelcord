@@ -2,6 +2,7 @@ package de.flerbuster.merkelcord.api
 
 import de.flerbuster.merkelcord.api.event.shared.guild.Guild
 import de.flerbuster.merkelcord.api.event.shared.message.Message
+import de.flerbuster.merkelcord.api.event.shared.user.User
 import de.flerbuster.merkelcord.api.model.SendableMessage
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -84,4 +85,7 @@ class DiscordApi(
 
             setBody(decodingJson.encodeToString(SendableMessage.onlyContent(content)))
         }
+
+    suspend fun getSelf()
+        = get<User>("/users/@me")
 }

@@ -14,6 +14,7 @@ import de.flerbuster.merkelcord.api.event.shared.guild.Guild
 import de.flerbuster.merkelcord.api.websocket.DiscordWebSocket
 import de.flerbuster.merkelcord.api.websocket.message.MessageCreateMessage
 import de.flerbuster.merkelcord.api.websocket.on
+import de.flerbuster.merkelcord.auth.AuthManager
 import de.flerbuster.merkelcord.ui.channel.dmChannels.DmChannels
 import de.flerbuster.merkelcord.ui.channel.openChannel.OpenChannel
 import de.flerbuster.merkelcord.ui.coloring.colorScheme
@@ -42,7 +43,7 @@ suspend fun getOrCreateWebsocket(token: String, onReady: DiscordReadyEvent.() ->
 fun Merkelcord() {
     val websocketScope = rememberCoroutineScope()
 
-    val token = ""
+    val token = AuthManager.token!!
 
     val guilds = remember { mutableStateListOf<Guild>() }
     val privateChannels = remember { mutableStateListOf<PrivateChannel>() }
